@@ -4,6 +4,8 @@ RUN apt-get install phantomjs nodejs npm -y
 
 RUN update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
 
+EXPOSE 8181
+
 ADD . /srv/webslinger/
 WORKDIR /srv/webslinger
 RUN npm install

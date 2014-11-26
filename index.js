@@ -1,6 +1,9 @@
 var restify = require('restify');
 var webshot = require('webshot');
 
+var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
+var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
+
 function twitterCard(req, res, next) {
   path = req.path();
   console.log(path);
@@ -14,10 +17,10 @@ function twitterCard(req, res, next) {
       width: 280
     , height: 150
     }
-  , zoomFactor: 0.5
+  , zoomFactor: zoomFactor
   }
   
-  webshot('http://nbviewer.ipython.org' + path, options, function(err, renderStream) {
+  webshot(baseURL + path, options, function(err, renderStream) {
     renderStream.pipe(res);
   });
 }
