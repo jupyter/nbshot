@@ -42,7 +42,7 @@ function twitterCard(req, res, next) {
     });
 
     writeStream.on('success', function(file) {
-      res.send({url: cdnSslUri + path});
+      res.send({url: cdnSslUri + path + ".png"});
     });
 
     renderStream.pipe(writeStream);
@@ -50,7 +50,6 @@ function twitterCard(req, res, next) {
 }
 
 client.getContainer(containerName, function(err, container) {
-  //TODO: Have this available and ready for later
   cdnSslUri = container.cdnSslUri;
 
   var server = restify.createServer();
