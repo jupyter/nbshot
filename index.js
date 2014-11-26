@@ -45,7 +45,7 @@ function twitterCard(req, res, next) {
     });
 
     renderStream.pipe(writeStream);
-    res.send({url: cdnSslUri + path + ".png"});
+    res.send({url: req.cdnUrl + path + ".png"});
   });
 }
 
