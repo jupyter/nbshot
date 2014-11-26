@@ -12,10 +12,11 @@ var client = pkgcloud.storage.createClient({
   region:   process.env.OS_REGION_NAME
 });
 
+var container = process.env.CONTAINER;
+
 function twitterCard(req, res, next) {
   path = req.path();
   console.log(path);
-  res.setHeader('content-type', 'image/png');
   var options = {
     screenSize: {
       width: 280
@@ -41,10 +42,12 @@ function twitterCard(req, res, next) {
 
     writeStream.on('success', function(file) {
       // success, file will be a File model
+      console.log("To the cloud!");
     });
 
     renderStream.pipe(writeStream);
   });
+  res.send({});
 }
 
 var server = restify.createServer();
