@@ -1,8 +1,16 @@
 var restify = require('restify');
 var webshot = require('webshot');
+var pkgcloud = require('pkgcloud');
 
 var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
 var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
+
+var client = pkgcloud.storage.createClient({
+  provider: 'rackspace',
+  username: process.env.OS_USERNAME,
+  apiKey:   process.env.OS_PASSWORD,
+  region:   process.env.OS_REGION_NAME
+});
 
 function twitterCard(req, res, next) {
   path = req.path();
@@ -21,7 +29,21 @@ function twitterCard(req, res, next) {
   }
   
   webshot(baseURL + path, options, function(err, renderStream) {
-    renderStream.pipe(res);
+    var writeStream = client.upload({
+      container: "webslinger-test",
+      remote: path + ".png"
+    });
+
+    writeStream.on('error', function(err) {
+      // handle your error case
+      console.log(err);
+    });
+
+    writeStream.on('success', function(file) {
+      // success, file will be a File model
+    });
+
+    renderStream.pipe(writeStream);
   });
 }
 

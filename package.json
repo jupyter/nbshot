@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/jupyter/nbshot",
   "dependencies": {
+    "pkgcloud": "^1.0.3",
     "restify": "^2.8.3",
     "webshot": "^0.15.3"
   }
