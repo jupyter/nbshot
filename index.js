@@ -12,7 +12,11 @@ var client = pkgcloud.storage.createClient({
   region:   process.env.OS_REGION_NAME
 });
 
-var container = process.env.CONTAINER;
+var containerName = process.env.CONTAINER;
+var container = client.getContainer(containerName, function(err, container) {
+  //TODO: Have this available and ready for later
+  var cdnSslUri = container.csnSslUri;
+});
 
 function twitterCard(req, res, next) {
   path = req.path();
@@ -31,7 +35,7 @@ function twitterCard(req, res, next) {
   
   webshot(baseURL + path, options, function(err, renderStream) {
     var writeStream = client.upload({
-      container: container,
+      container: containerName,
       remote: path + ".png"
     });
 
