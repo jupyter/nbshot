@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/rgbkrk/webslinger",
   "dependencies": {
+    "phantomjs": "^1.9.12",
     "webshot": "^0.15.3"
   }
 }
