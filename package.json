@@ -1,26 +1,28 @@
 {
-  "name": "webslinger",
+  "name": "nbshot",
   "version": "1.0.0",
-  "description": "Screenshot service based on node-webshot",
+  "description": "Screenshots of rendered Jupyter Notebooks",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rgbkrk/webslinger.git"
+    "url": "https://github.com/jupyter/nbshot.git"
   },
   "keywords": [
     "screenshot",
     "service",
+    "jupyter",
+    "ipython",
     "webshot"
   ],
-  "author": "Kyle Kelley",
+  "author": "Jupyter Project",
   "license": "Modified BSD",
   "bugs": {
-    "url": "https://github.com/rgbkrk/webslinger/issues"
+    "url": "https://github.com/jupyter/nbshot/issues"
   },
-  "homepage": "https://github.com/rgbkrk/webslinger",
+  "homepage": "https://github.com/jupyter/nbshot",
   "dependencies": {
     "restify": "^2.8.3",
     "webshot": "^0.15.3"
