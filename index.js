@@ -31,7 +31,7 @@ function twitterCard(req, res, next) {
   
   webshot(baseURL + path, options, function(err, renderStream) {
     var writeStream = client.upload({
-      container: "webslinger-test",
+      container: container,
       remote: path + ".png"
     });
 
@@ -43,11 +43,11 @@ function twitterCard(req, res, next) {
     writeStream.on('success', function(file) {
       // success, file will be a File model
       console.log("To the cloud!");
+      res.send({});
     });
 
     renderStream.pipe(writeStream);
   });
-  res.send({});
 }
 
 var server = restify.createServer();
