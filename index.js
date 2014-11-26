@@ -2,7 +2,7 @@ var restify = require('restify');
 var webshot = require('webshot');
 var pkgcloud = require('pkgcloud');
 
-var cdnSslUri = '';
+var cdnUrl = '';
 
 var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
 var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
@@ -49,15 +49,29 @@ function twitterCard(req, res, next) {
   });
 }
 
-client.getContainer(containerName, function(err, container) {
-  cdnSslUri = container.cdnSslUri;
+var server = restify.createServer();
 
-  var server = restify.createServer();
-  server.get('/.*', twitterCard);
-  
-  server.listen(8181, function() {
-    console.log('%s listening at %s', server.name, server.url);
+server.use(function(req, res, next) {
+  // if we already have the url, just put it in the request, and then continue
+  if (cdnUrl) {
+    req.cdnUrl = cdnUrl;
+    next();
+    return;
+  }
+
+  // note, this would create a latency for the first request
+  client.getContainer(containerName, function(err, container) {
+    if (err) { next(err); return; }
+
+    req.cdnUrl = cdnUrl = container.cdnSslUri;
+    next();
+    return;
   });
 });
 
+server.get('/.*', twitterCard);
+
+server.listen(8181, function() {
+  console.log('%s listening at %s', server.name, server.url);
+});
 
