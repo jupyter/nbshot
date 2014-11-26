@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/rgbkrk/webslinger/issues"
   },
-  "homepage": "https://github.com/rgbkrk/webslinger"
+  "homepage": "https://github.com/rgbkrk/webslinger",
+  "dependencies": {
+    "webshot": "^0.15.3"
+  }
 }
