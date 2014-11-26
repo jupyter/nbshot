@@ -42,10 +42,10 @@ function twitterCard(req, res, next) {
     });
 
     writeStream.on('success', function(file) {
-      res.send({url: cdnSslUri + path + ".png"});
     });
 
     renderStream.pipe(writeStream);
+    res.send({url: cdnSslUri + path + ".png"});
   });
 }
 
