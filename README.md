@@ -17,5 +17,5 @@ docker run -p 8181:8181 \
 ### TODO
 
 * [ ] Determine good heuristics for capturing a screenshot of a rendered notebook
-* [ ] Cleanly end "API" call while the image processing happens in background
-* [ ] Send images off to a CDN
+* [X] Cleanly end "API" call while the image processing happens in background
+* [X] Send images off to a CDN
