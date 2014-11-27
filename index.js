@@ -19,8 +19,8 @@ var containerName = process.env.CONTAINER;
 function detectInteresting() {
 	$('#menubar').remove();
   // YOLO
-  el = $('img').last()[0];
-  el.scrollIntoView();
+  img = $('img').last();
+  window.document.body.scrollTop = img.offset()['top']
 }
 
 function twitterCard(req, res, next) {
