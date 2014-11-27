@@ -16,6 +16,13 @@ var client = pkgcloud.storage.createClient({
 
 var containerName = process.env.CONTAINER;
 
+function detectInteresting() {
+	$('#menubar').remove();
+  // YOLO
+  el = $('img').last()[0];
+  el.scrollIntoView();
+}
+
 function twitterCard(req, res, next) {
   var path = req.path();
   console.log(path);
@@ -29,6 +36,8 @@ function twitterCard(req, res, next) {
     , height: 150
     }
   , zoomFactor: zoomFactor
+  , renderDelay: 100
+  , onLoadFinished: detectInteresting
   }
   
   webshot(baseURL + path, options, function(err, renderStream) {
