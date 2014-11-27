@@ -20,8 +20,10 @@ function detectInteresting() {
 	$('#menubar').remove();
   // YOLO
   img = $('img').last();
+  el = img[0];
+  el.scrollIntoView()
   offset = img.offset()
-  page.clipRect = {top: offset.top, left: offset.left}
+  page.clipRect = {'top': offset.top, 'left': offset.left}
 }
 
 function twitterCard(req, res, next) {
