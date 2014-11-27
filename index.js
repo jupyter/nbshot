@@ -32,9 +32,11 @@ function twitterCard(req, res, next) {
   }
   
   webshot(baseURL + path, options, function(err, renderStream) {
+    fullPath = path + ".png"
+
     var writeStream = client.upload({
       container: containerName,
-      remote: path + ".png"
+      remote: decodeURI(fullPath)
     });
 
     writeStream.on('error', function(err) {
@@ -42,10 +44,11 @@ function twitterCard(req, res, next) {
     });
 
     writeStream.on('success', function(file) {
+      console.log('Finished ' + fullPath);
     });
 
     renderStream.pipe(writeStream);
-    res.send({url: req.cdnUrl + path + ".png"});
+    res.send({url: req.cdnUrl + fullPath});
   });
 }
 
