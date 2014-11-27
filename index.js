@@ -20,7 +20,8 @@ function detectInteresting() {
 	$('#menubar').remove();
   // YOLO
   img = $('img').last();
-  window.document.body.scrollTop = img.offset()['top']
+  offset = img.offset()
+  page.clipRect = {top: offset.top, left: offset.left}
 }
 
 function twitterCard(req, res, next) {
