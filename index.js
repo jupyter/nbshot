@@ -22,8 +22,8 @@ function detectInteresting() {
   img = $('img').last();
   el = img[0];
   el.scrollIntoView()
-  offset = img.offset()
-  page.clipRect = {'top': offset.top, 'left': offset.left}
+  //offset = img.offset()
+  //page.clipRect = {'top': offset.top, 'left': offset.left}
 }
 
 function twitterCard(req, res, next) {
