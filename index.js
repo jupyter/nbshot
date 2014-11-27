@@ -17,7 +17,7 @@ var client = pkgcloud.storage.createClient({
 var containerName = process.env.CONTAINER;
 
 function twitterCard(req, res, next) {
-  path = req.path();
+  var path = req.path();
   console.log(path);
   var options = {
     screenSize: {
@@ -32,7 +32,7 @@ function twitterCard(req, res, next) {
   }
   
   webshot(baseURL + path, options, function(err, renderStream) {
-    fullPath = path + ".png"
+    var fullPath = path + ".png"
 
     var writeStream = client.upload({
       container: containerName,
