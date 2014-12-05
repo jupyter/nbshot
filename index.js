@@ -1,8 +1,8 @@
+var url = require('url');
+
 var express = require('express');
-var bodyParser = require('body-parser');
 var webshot = require('webshot');
 var pkgcloud = require('pkgcloud');
-var url = require('url');
 
 /**
  * CDN URL will get defined later in the process after asking CloudFiles
