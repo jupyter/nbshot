@@ -16,8 +16,8 @@ var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
 
 var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
 var renderDelay = process.env.RENDER_DELAY || 100;
-var width = 280;
-var height = 150;
+var defaultWidth = twitterCardWidth = 280;
+var defaultHeight = twitterCardHeight = 150;
 
 var client = pkgcloud.storage.createClient({
   provider: 'rackspace',
