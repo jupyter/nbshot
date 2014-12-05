@@ -67,14 +67,14 @@ function twitterCard(req, res, next) {
 var server = restify.createServer();
 
 server.use(function(req, res, next) {
-  // if we already have the url, just put it in the request, and then continue
+  // If we already have the url, just put it in the request, and then continue
   if (cdnUrl) {
     req.cdnUrl = cdnUrl;
     next();
     return;
   }
 
-  // note, this would create a latency for the first request
+  // Note: there will be latency on the first request
   client.getContainer(containerName, function(err, container) {
     if (err) { next(err); return; }
 
@@ -84,7 +84,7 @@ server.use(function(req, res, next) {
   });
 });
 
-server.get('/.*', twitterCard);
+server.get('/api/screenshot/.*', screenshot);
 
 server.listen(8181, function() {
   console.log('%s listening at %s', server.name, server.url);
