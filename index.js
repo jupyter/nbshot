@@ -45,18 +45,12 @@ function screenshot(req, res, next) {
   var width = req.params.width || defaultWidth;
   var height = req.params.height || defaultHeight;
 
-  var upstream_uri = req.params.upstream_uri;
+  var capture_uri = req.params.capture_uri;
+  var captureURL = url.resolve(baseURL, capture_uri);
 
-  console.log(baseURL);
-  console.log(upstream_uri);
-  console.log(req.path);
-  console.log("wat");
+  var CDNPath = width + "/" + height + "/" + capture_uri + ".png";
 
-  var upstreamURL = url.resolve(baseURL, upstream_uri);
-
-  var object_path = width + "/" + height + "/" + upstream_uri;
-
-  console.log("Rendering " + upstreamURL);
+  console.log("Rendering " + captureURL);
   console.log("At " + width + "x" + height);
 
   var options = {
@@ -73,20 +67,11 @@ function screenshot(req, res, next) {
   , onLoadFinished: detectInteresting
   }
   
-  webshot(upstreamURL, options, function(err, renderStream) {
-
-    if (err !== undefined) {
-			 console.log(err);
-       // TODO: Set an appropriate status
-			 //res.send(err);
-			 return;
-		}
-
-    var fullPath = width + height + path + ".png"
+  webshot(captureURL, options, function(err, renderStream) {
 
     var writeStream = client.upload({
       container: containerName,
-      remote: decodeURI(fullPath)
+      remote: decodeURI(CDNPath)
     });
 
     writeStream.on('error', function(err) {
@@ -94,18 +79,16 @@ function screenshot(req, res, next) {
     });
 
     writeStream.on('success', function(file) {
-      console.log('Finished ' + fullPath);
+      console.log('Finished ' + CDNPath);
     });
 
 	  renderStream.pipe(writeStream);
     
-    res.send({url: req.cdnUrl + fullPath});
+    res.send({url: url.resolve(req.cdnUrl, CDNPath)});
   });
 }
 
 var app = express();
-
-//app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
   // If we already have the url, just put it in the request, and then continue
@@ -125,31 +108,18 @@ app.use(function(req, res, next) {
   });
 });
 
-app.param(function(name, fn){
-  if (fn instanceof RegExp) {
-    return function(req, res, next, val){
-      var captures;
-      if (captures = fn.exec(String(val))) {
-        req.params[name] = captures;
-        next();
-      } else {
-        next('route');
-      }
-    }
-  }
+app.get('/api/screenshots/:width/:height/:capture_uri(*)', screenshot);
+
+// Utility redirect for Twitter cards
+app.get('/api/twitter_cards/:capture_uri(*)', function(req, res) {
+  res.redirect('/api/screenshots/' + twitterCardWidth +
+                               '/' + twitterCardHeight +
+															 '/' + req.params.capture_uri);
 });
-
-
-app.param('width', /^\d+$/);
-app.param('height', /^\d+$/);
-app.param('upstream_uri', /^.+$/);
-
-app.get('/api/screenshots/:width/:height/:upstream_uri', screenshot);
-app.post('/api/screenshots/:width/:height/:upstream_uri', screenshot);
 
 app.get('/', function(req, res) {
   res.json({
-    "screenshots_url": req.headers.host + "/api/screenshots/{width}/{height}/{upstream_uri}",
+    "screenshots_url": req.headers.host + "/api/screenshots/{width}/{height}/{capture_uri}",
     "base_url": baseURL
 	});
 });
