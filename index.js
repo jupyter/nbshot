@@ -13,6 +13,9 @@ var cdnUrl = '';
 var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
 
 var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
+var renderDelay = process.env.RENDER_DELAY || 100;
+var width = 280;
+var height = 150;
 
 var client = pkgcloud.storage.createClient({
   provider: 'rackspace',
@@ -35,17 +38,17 @@ function detectInteresting() {
   el.scrollIntoView()
 }
 
-function twitterCard(req, res, next) {
+function screenshot(req, res, next) {
   var path = req.path();
   console.log("Rendering " + path);
   var options = {
     screenSize: {
-      width: 280
-    , height: 150
+      width: width
+    , height: height
     }
   , shotSize: {
-      width: 280
-    , height: 150
+      width: width
+    , height: height
     }
   , zoomFactor: zoomFactor
   , renderDelay: renderDelay
