@@ -2,9 +2,16 @@ var restify = require('restify');
 var webshot = require('webshot');
 var pkgcloud = require('pkgcloud');
 
+/**
+ * CDN URL will get defined later in the process after asking CloudFiles
+ */
 var cdnUrl = '';
 
+/**
+ * Base URL is the URL to render screenshots from
+ */
 var baseURL = process.env.BASE_URL || 'http://nbviewer.ipython.org';
+
 var zoomFactor = process.env.ZOOM_FACTOR || 0.5;
 
 var client = pkgcloud.storage.createClient({
@@ -18,17 +25,19 @@ var containerName = process.env.CONTAINER;
 
 function detectInteresting() {
 	$('#menubar').remove();
-  // YOLO
+  // YOLO, get the last image
   img = $('img').last();
   el = img[0];
+  // TODO: Actually get the screenshot setup where this image is.
+  //
+  //       Scrolling does nothing since we have to set shot and screen size prior,
+  //       and the "screen" is full size (Phantom pretty much ignores this).
   el.scrollIntoView()
-  //offset = img.offset()
-  //page.clipRect = {'top': offset.top, 'left': offset.left}
 }
 
 function twitterCard(req, res, next) {
   var path = req.path();
-  console.log(path);
+  console.log("Rendering " + path);
   var options = {
     screenSize: {
       width: 280
@@ -39,7 +48,7 @@ function twitterCard(req, res, next) {
     , height: 150
     }
   , zoomFactor: zoomFactor
-  , renderDelay: 100
+  , renderDelay: renderDelay
   , onLoadFinished: detectInteresting
   }
   
