@@ -1,6 +1,8 @@
-var restify = require('restify');
+var express = require('express');
+var bodyParser = require('body-parser');
 var webshot = require('webshot');
 var pkgcloud = require('pkgcloud');
+var url = require('url');
 
 /**
  * CDN URL will get defined later in the process after asking CloudFiles
@@ -39,8 +41,24 @@ function detectInteresting() {
 }
 
 function screenshot(req, res, next) {
-  var path = req.path();
-  console.log("Rendering " + path);
+
+  var width = req.params.width || defaultWidth;
+  var height = req.params.height || defaultHeight;
+
+  var upstream_uri = req.params.upstream_uri;
+
+  console.log(baseURL);
+  console.log(upstream_uri);
+  console.log(req.path);
+  console.log("wat");
+
+  var upstreamURL = url.resolve(baseURL, upstream_uri);
+
+  var object_path = width + "/" + height + "/" + upstream_uri;
+
+  console.log("Rendering " + upstreamURL);
+  console.log("At " + width + "x" + height);
+
   var options = {
     screenSize: {
       width: width
@@ -55,8 +73,16 @@ function screenshot(req, res, next) {
   , onLoadFinished: detectInteresting
   }
   
-  webshot(baseURL + path, options, function(err, renderStream) {
-    var fullPath = path + ".png"
+  webshot(upstreamURL, options, function(err, renderStream) {
+
+    if (err !== undefined) {
+			 console.log(err);
+       // TODO: Set an appropriate status
+			 //res.send(err);
+			 return;
+		}
+
+    var fullPath = width + height + path + ".png"
 
     var writeStream = client.upload({
       container: containerName,
@@ -71,14 +97,17 @@ function screenshot(req, res, next) {
       console.log('Finished ' + fullPath);
     });
 
-    renderStream.pipe(writeStream);
+	  renderStream.pipe(writeStream);
+    
     res.send({url: req.cdnUrl + fullPath});
   });
 }
 
-var server = restify.createServer();
+var app = express();
 
-server.use(function(req, res, next) {
+//app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
   // If we already have the url, just put it in the request, and then continue
   if (cdnUrl) {
     req.cdnUrl = cdnUrl;
@@ -96,9 +125,39 @@ server.use(function(req, res, next) {
   });
 });
 
-server.get('/api/screenshot/.*', screenshot);
-
-server.listen(8181, function() {
-  console.log('%s listening at %s', server.name, server.url);
+app.param(function(name, fn){
+  if (fn instanceof RegExp) {
+    return function(req, res, next, val){
+      var captures;
+      if (captures = fn.exec(String(val))) {
+        req.params[name] = captures;
+        next();
+      } else {
+        next('route');
+      }
+    }
+  }
 });
 
+
+app.param('width', /^\d+$/);
+app.param('height', /^\d+$/);
+app.param('upstream_uri', /^.+$/);
+
+app.get('/api/screenshots/:width/:height/:upstream_uri', screenshot);
+app.post('/api/screenshots/:width/:height/:upstream_uri', screenshot);
+
+app.get('/', function(req, res) {
+  res.json({
+    "screenshots_url": req.headers.host + "/api/screenshots/{width}/{height}/{upstream_uri}",
+    "base_url": baseURL
+	});
+});
+
+var server = app.listen(8181, function() {
+
+  var host = server.address().address
+  var port = server.address().port
+
+  console.log('nbshot listening at http://%s:%s', host, port)
+});
