@@ -50,6 +50,8 @@ function screenshot(req, res, next) {
 
   var CDNPath = width + "/" + height + "/" + captureURI + ".png";
 
+  res.send({url: url.resolve(req.cdnUrl, CDNPath)});
+
   console.log("Rendering " + captureURL);
   console.log("At " + width + "x" + height);
 
@@ -83,8 +85,6 @@ function screenshot(req, res, next) {
     });
 
 	  renderStream.pipe(writeStream);
-    
-    res.send({url: url.resolve(req.cdnUrl, CDNPath)});
   });
 }
 
