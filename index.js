@@ -45,10 +45,10 @@ function screenshot(req, res, next) {
   var width = req.params.width || defaultWidth;
   var height = req.params.height || defaultHeight;
 
-  var capture_uri = req.params.capture_uri;
-  var captureURL = url.resolve(baseURL, capture_uri);
+  var captureURI = req.params.captureURI;
+  var captureURL = url.resolve(baseURL, captureURI);
 
-  var CDNPath = width + "/" + height + "/" + capture_uri + ".png";
+  var CDNPath = width + "/" + height + "/" + captureURI + ".png";
 
   console.log("Rendering " + captureURL);
   console.log("At " + width + "x" + height);
@@ -108,19 +108,12 @@ app.use(function(req, res, next) {
   });
 });
 
-app.get('/api/screenshots/:width/:height/:capture_uri(*)', screenshot);
-
-// Utility redirect for Twitter cards
-app.get('/api/twitter_cards/:capture_uri(*)', function(req, res) {
-  res.redirect('/api/screenshots/' + twitterCardWidth +
-                               '/' + twitterCardHeight +
-															 '/' + req.params.capture_uri);
-});
+app.get('/api/screenshots/:width/:height/:captureURI(*)', screenshot);
 
 app.get('/', function(req, res) {
   res.json({
-    "screenshots_url": req.headers.host + "/api/screenshots/{width}/{height}/{capture_uri}",
-    "base_url": baseURL
+    "screenshotsURL": req.headers.host + "/api/screenshots/{width}/{height}/{captureURI}",
+    "baseURL": baseURL
 	});
 });
 
